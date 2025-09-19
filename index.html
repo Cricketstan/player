@@ -1,66 +1,69 @@
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.css">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-<script src="https://cdn.jsdelivr.net/npm/plyr@3.7.8/dist/plyr.polyfilled.js"></script>
+<html lang="en"> 
+<head> 
+  <meta charset="UTF-8"> 
+  <title>Allrounder</title> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0"> 
+  <script src="//content.jwplatform.com/libraries/SAHhwvZq.js"></script> 
+<link rel="stylesheet" href="https://chlive.pages.dev/style.css">
 
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    background: #000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* Thin Red Buffer Spinner */
+.vjs-waiting .vjs-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid red;          /* Thin red border */
+  border-top-color: transparent;  /* Makes it spin visually */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-sizing: border-box;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -20px 0 0 -20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
+}
+  <style> 
+    body { 
+      margin: 0; 
+      padding: 0; 
+      background-color: #000; 
+      height: 100vh; 
+      width: 100vw; 
+      overflow: hidden;
+    } 
+    .jwplayer { 
+      position: absolute !important; 
+      top: 0; 
+      left: 0; 
+      width: 100% !important; 
+      height: 100% !important; 
+    } 
+    .jwplayer.jw-flag-aspect-mode { 
+      min-height: 100%; 
+      max-height: 100%; 
+    } 
+  </style> 
+</head> 
+<body> 
+  <div id="jwplayerDiv"></div> 
+  <script> 
+    const urlParams = new URLSearchParams(window.location.search); 
+    const videoUrl = urlParams.get('url') || 'tv.m3u8'; // default fallback
 
-  .video-container {
-    position: relative;
-    width: 110%;
-    height: 100%;
-    background: #000;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  video {
-    width: 110%;
-    max-height: 100%;
-    object-fit: contain; /* keeps correct aspect ratio */
-    background: #000;
-  }
-</style>
-
-<div class="video-container">
-  <video autoplay oncanplay="this.muted=true" id="player" controls preload="metadata"></video>
-</div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const video = document.getElementById("player");
-
-    // Get HLS source from URL param
-    const params = new URLSearchParams(window.location.search);
-    const source = params.get("domain/url");
-    if (!source) {
-      console.error("No HLS URL provided in domain/url param");
-      return;
-    }
-
-    if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(source);
-      hls.attachMedia(video);
-      hls.on(Hls.Events.MANIFEST_PARSED, () => video.play());
-    } else if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = source;
-      video.addEventListener("loadedmetadata", () => video.play());
-    }
-
-    new Plyr(video);
-  });
-</script>
+    jwplayer("jwplayerDiv").setup({ 
+      file: videoUrl, 
+      position: 'bottom', 
+      autostart: true, 
+      stretching: "uniform", 
+      width: "100%", 
+      type: "hls" 
+    }); 
+  </script> 
+</body> 
+</html>
